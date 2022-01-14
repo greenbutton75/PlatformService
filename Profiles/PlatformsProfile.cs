@@ -9,7 +9,7 @@ namespace PlatformService.Profiles
         {
             // src -> tgt
             CreateMap<Models.Platform, PlatformReadDto>();
-            CreateMap<PlatformReadDto, Models.Platform>();
+            CreateMap<PlatformCreateDto, Models.Platform>();
         }
     }
 }
