@@ -1,38 +1,58 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace PlatformService.Data
 {
     public static class PrepDb
     {
-        public static void PrepPopulation(IApplicationBuilder app)
+        private static IWebHostEnvironment _env;
+
+        public static void PrepPopulation(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            _env = env;
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
-                SeedData(serviceScope.ServiceProvider.GetService <AppDbContext>());
+                SeedData(serviceScope.ServiceProvider.GetService<AppDbContext>());
             }
         }
 
         private static void SeedData(AppDbContext context)
         {
-            if (!context.Platforms.Any() )
+            if (_env.IsProduction())
             {
-                Console.WriteLine ("--> Seeding Data");
+                Console.WriteLine("--> Apply migration");
+                try
+                {
+                    context.Database.Migrate(); 
+                }
+                catch (System.Exception ex)
+                {
+                    Console.WriteLine($"--> Apply migration ERROR {ex.Message}");
+                }
+                
+            }
 
-                context.Platforms.AddRange  (
-                    new Models.Platform (){Name="DotNet", Publisher ="Microsoft", Cost="100"},
-                    new Models.Platform (){Name="Redis", Publisher ="RedisCorp", Cost="Free"}
+            if (!context.Platforms.Any())
+            {
+                Console.WriteLine("--> Seeding Data");
+
+                context.Platforms.AddRange(
+                    new Models.Platform() { Name = "DotNet", Publisher = "Microsoft", Cost = "100" },
+                    new Models.Platform() { Name = "Redis", Publisher = "RedisCorp", Cost = "Free" }
                 );
-                context.SaveChanges ();
+                context.SaveChanges();
 
             }
             else
             {
-                Console.WriteLine ("--> there are some platforms in DB already");
+                Console.WriteLine("--> there are some platforms in DB already");
             }
-            //context.
+
         }
     }
 
