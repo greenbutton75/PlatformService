@@ -10,6 +10,7 @@ namespace PlatformService.Profiles
             // src -> tgt
             CreateMap<Models.Platform, PlatformReadDto>();
             CreateMap<PlatformCreateDto, Models.Platform>();
+            CreateMap<PlatformReadDto, PlatformPublishedDto>();
         }
     }
 }

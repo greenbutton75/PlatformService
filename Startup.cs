@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using PlatformService.Data;
 using Microsoft.EntityFrameworkCore;
 using PlatformService.SyncDataServices.Http;
+using PlatformService.AsyncDataServices;
 
 namespace PlatformService
 {
@@ -45,6 +46,7 @@ namespace PlatformService
                 services.AddDbContext<AppDbContext>(opt =>
                             opt.UseInMemoryDatabase("InMem"));
             }
+            services.AddSingleton<IMessageBusClient, MessageBusClient>();
             services.AddScoped<IPlatformRepo, PlatformRepo>();
 
             services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
