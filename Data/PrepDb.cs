@@ -43,7 +43,8 @@ namespace PlatformService.Data
 
                 context.Platforms.AddRange(
                     new Models.Platform() { Name = "DotNet", Publisher = "Microsoft", Cost = "100" },
-                    new Models.Platform() { Name = "Redis", Publisher = "RedisCorp", Cost = "Free" }
+                    new Models.Platform() { Name = "Redis", Publisher = "RedisCorp", Cost = "Free" },
+                    new Models.Platform() { Name = "K8s", Publisher = "Google", Cost = "Free" }
                 );
                 context.SaveChanges();
 

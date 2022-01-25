@@ -15,6 +15,8 @@ using PlatformService.Data;
 using Microsoft.EntityFrameworkCore;
 using PlatformService.SyncDataServices.Http;
 using PlatformService.AsyncDataServices;
+using PlatformService.SyncDataServices.Grpc;
+using Microsoft.AspNetCore.Http;
 
 namespace PlatformService
 {
@@ -50,6 +52,7 @@ namespace PlatformService
             services.AddScoped<IPlatformRepo, PlatformRepo>();
 
             services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
+            services.AddGrpc(); // добавление сервисов gRPC
 
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -71,7 +74,7 @@ namespace PlatformService
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PlatformService v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -80,6 +83,12 @@ namespace PlatformService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGrpcService<GrpcPlatformService>();
+
+                endpoints.MapGet("/protos/platforms.proto",async context =>
+                {
+                    await context.Response.WriteAsync(System.IO.File.ReadAllText("Protos/platforms.proto"));
+                });
             });
 
             PrepDb.PrepPopulation(app, _env);
