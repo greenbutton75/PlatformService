@@ -25,7 +25,7 @@ namespace PlatformService.Data
         {
             if (_env.IsProduction())
             {
-                Console.WriteLine("--> Apply migration");
+                Console.WriteLine("--> Apply migration ");
                 try
                 {
                     context.Database.Migrate(); 
